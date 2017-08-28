@@ -1,0 +1,11 @@
+{
+  "name": "text_adventure",
+  "version": "1.0.0",
+  "dependencies": {},
+  "scripts": {
+    "start": "tsc -w main.ts"
+  },
+  "devDependencies": {
+    "typescript": "^2.4.2"
+  }
+}

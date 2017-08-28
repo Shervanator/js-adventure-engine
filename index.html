@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Game</title>
+    <style>
+      html, body { height: 100%; }
+      body{
+        background: #000;
+        padding-top: 10px;
+      }
+
+      .consoleText {
+        color: lime;
+        font-family: "Courier";
+        font-size: 20px;
+        margin: 10px 0 0 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 30em;
+        animation: type 4s steps(60, end);
+      }
+
+      .consoleText:nth-child(2){
+        animation: type2 8s steps(60, end);
+      }
+
+      .consoleText a{
+        color: lime;
+        text-decoration: none;
+      }
+
+      span{
+        animation: blink 1s infinite;
+      }
+
+      @keyframes type{
+        from { width: 0; }
+      }
+
+      @keyframes type2{
+        0%{width: 0;}
+        50%{width: 0;}
+        100%{ width: 100; }
+      }
+
+      @keyframes blink{
+        to{opacity: .0;}
+      }
+
+      ::selection{
+        background: black;
+      }
+
+      .container {
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+        overflow: hidden;
+      }
+
+      #console {
+        flex: 1 1 90%;
+        overflow: auto;
+      }
+
+      #commandForm {
+        flex: 0 0 10%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <ul id="console">
+        <li class="consoleText">Welcome adventurer, type '?' to get started</li>
+      </ul>
+      <form id="commandForm">
+        <input id="command" type="text" />
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
