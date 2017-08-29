@@ -46,7 +46,12 @@ var AdventureEngine = (function () {
         this.stateY = startY;
     }
     AdventureEngine.prototype.submitCommand = function (command) {
-        this.processCommand(command.split(' '));
+        if (this.roomActions() && this.parseActionCommand(command)) {
+            return;
+        }
+        else {
+            this.processCommand(command.split(' '));
+        }
     };
     AdventureEngine.prototype.processCommand = function (command) {
         if (command[0] === '?' || command[0] === 'help') {
@@ -62,57 +67,71 @@ var AdventureEngine = (function () {
             this.go(command[1]);
         }
     };
+    AdventureEngine.prototype.parseActionCommand = function (command) {
+        var actionsObj = this.roomActions();
+        if (actionsObj) {
+            var actions = Object.keys(actionsObj).map(function (actionKey) { return actionKey.toLowerCase(); });
+            for (var i = 0; i < actions.length; i++) {
+                var actionKey = actions[i];
+                if (command === actionKey) {
+                    var action = actionsObj[actionKey];
+                    this.print(action.message);
+                    return true;
+                }
+            }
+            return false;
+        }
+    };
     AdventureEngine.prototype.checkLegalPosition = function (posX, posY) {
         return !(posY < 0 || posY >= this.height || posX < 0 || posX >= this.width || this.map[posY][posX] === null);
+    };
+    AdventureEngine.prototype.roomActions = function () {
+        return this.getRoom().actions;
+    };
+    AdventureEngine.prototype.handleActions = function () {
+        var _this = this;
+        var actionsObj = this.roomActions();
+        if (actionsObj) {
+            var actions = Object.keys(actionsObj);
+            this.print("You are able to do the following actions:");
+            actions.forEach(function (actionKey) {
+                var action = actionsObj[actionKey];
+                _this.print(actionKey);
+            });
+        }
+    };
+    AdventureEngine.prototype.visitRoom = function (posX, posY) {
+        if (this.checkLegalPosition(posX, posY)) {
+            this.stateX = posX;
+            this.stateY = posY;
+            this.printIntro();
+            this.markRoomVisited();
+        }
+        else {
+            this.print('I cannot go that way chump!');
+        }
     };
     AdventureEngine.prototype.go = function (direction) {
         if (direction === 'forwards' || direction === 'f' || direction === 'up' || direction === 'u') {
             var newStateY = this.stateY - 1;
-            if (this.checkLegalPosition(this.stateX, newStateY)) {
-                this.stateY = newStateY;
-                this.printIntro();
-                this.markRoomVisited();
-            }
-            else {
-                this.print('I cannot go that way chump!');
-            }
+            this.visitRoom(this.stateX, newStateY);
         }
         else if (direction === 'backwards' || direction === 'b' || direction === 'back') {
             var newStateY = this.stateY + 1;
-            if (this.checkLegalPosition(this.stateX, newStateY)) {
-                this.stateY = newStateY;
-                this.printIntro();
-                this.markRoomVisited();
-            }
-            else {
-                this.print('I cannot go that way chump!');
-            }
+            this.visitRoom(this.stateX, newStateY);
         }
         else if (direction === 'left' || direction === 'l') {
             var newStateX = this.stateX - 1;
-            if (this.checkLegalPosition(newStateX, this.stateY)) {
-                this.stateX = newStateX;
-                this.printIntro();
-                this.markRoomVisited();
-            }
-            else {
-                this.print('I cannot go that way chump!');
-            }
+            this.visitRoom(newStateX, this.stateY);
         }
         else if (direction === 'right' || direction === 'r') {
             var newStateX = this.stateX + 1;
-            if (this.checkLegalPosition(newStateX, this.stateY)) {
-                this.stateX = newStateX;
-                this.printIntro();
-                this.markRoomVisited();
-            }
-            else {
-                this.print('I cannot go that way chump!');
-            }
+            this.visitRoom(newStateX, this.stateY);
         }
     };
     AdventureEngine.prototype.look = function () {
         this.print(this.getRoom().details);
+        this.handleActions();
     };
     AdventureEngine.prototype.onPrint = function (func) {
         this.print = func;

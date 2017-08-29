@@ -62,7 +62,11 @@ class AdventureEngine {
   }
 
   submitCommand(command: string) {
-    this.processCommand(command.split(' '))
+    if (this.roomActions() && this.parseActionCommand(command)) {
+      return
+    } else {
+      this.processCommand(command.split(' '))
+    }
   }
 
   processCommand(command: Array<string>) {
@@ -78,52 +82,73 @@ class AdventureEngine {
     }
   }
 
+  parseActionCommand(command: string) {
+    const actionsObj = this.roomActions()
+    if (actionsObj) {
+      const actions = Object.keys(actionsObj).map(actionKey => actionKey.toLowerCase())
+      for (let i = 0; i < actions.length; i++) {
+        const actionKey = actions[i]
+        if (command === actionKey) {
+          const action = actionsObj[actionKey]
+          this.print(action.message)
+          return true
+        }
+      }
+      return false
+    }
+  }
+
   checkLegalPosition(posX, posY) {
     return !(posY < 0 || posY >= this.height || posX < 0 || posX >= this.width || this.map[posY][posX] === null)
+  }
+
+  roomActions() {
+    return this.getRoom().actions
+  }
+
+  handleActions() {
+    const actionsObj = this.roomActions()
+    if (actionsObj) {
+      const actions = Object.keys(actionsObj)
+
+      this.print("You are able to do the following actions:")
+      actions.forEach((actionKey) => {
+        const action = actionsObj[actionKey]
+        this.print(actionKey)
+      })
+    }
+  }
+
+  visitRoom(posX: number, posY: number) {
+    if (this.checkLegalPosition(posX, posY)) {
+      this.stateX = posX
+      this.stateY = posY
+      this.printIntro()
+      this.markRoomVisited()
+    } else {
+      this.print('I cannot go that way chump!')
+    }
   }
 
   go(direction: string) {
     if (direction === 'forwards' || direction === 'f' || direction === 'up' || direction === 'u') {
       const newStateY = this.stateY - 1
-      if (this.checkLegalPosition(this.stateX, newStateY)) {
-        this.stateY = newStateY
-        this.printIntro()
-        this.markRoomVisited()
-      } else {
-        this.print('I cannot go that way chump!')
-      }
+      this.visitRoom(this.stateX, newStateY)
     } else if (direction === 'backwards' || direction === 'b' || direction === 'back') {
       const newStateY = this.stateY + 1
-      if (this.checkLegalPosition(this.stateX, newStateY)) {
-        this.stateY = newStateY
-        this.printIntro()
-        this.markRoomVisited()
-      } else {
-        this.print('I cannot go that way chump!')
-      }
+      this.visitRoom(this.stateX, newStateY)
     } else if (direction === 'left' || direction === 'l') {
       const newStateX = this.stateX - 1
-      if (this.checkLegalPosition(newStateX, this.stateY)) {
-        this.stateX = newStateX
-        this.printIntro()
-        this.markRoomVisited()
-      } else {
-        this.print('I cannot go that way chump!')
-      }
+      this.visitRoom(newStateX, this.stateY)
     } else if (direction === 'right' || direction === 'r') {
       const newStateX = this.stateX + 1
-      if (this.checkLegalPosition(newStateX, this.stateY)) {
-        this.stateX = newStateX
-        this.printIntro()
-        this.markRoomVisited()
-      } else {
-        this.print('I cannot go that way chump!')
-      }
+      this.visitRoom(newStateX, this.stateY)
     }
   }
 
   look() {
     this.print(this.getRoom().details)
+    this.handleActions()
   }
 
   onPrint(func: any) {
