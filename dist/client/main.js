@@ -66,6 +66,9 @@ var AdventureEngine = (function () {
         else if (command[0] === 'go' || command[0] === 'move' || command[0] === 'walk') {
             this.go(command[1]);
         }
+        else {
+            this.print('I can\'t do that dave', 'gm');
+        }
     };
     AdventureEngine.prototype.parseActionCommand = function (command) {
         var actionsObj = this.roomActions();
