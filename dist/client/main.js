@@ -151,6 +151,10 @@ game.onPrint(function (text) {
 });
 commandForm.onsubmit = function (event) {
     event.preventDefault();
+    var entry = document.createElement('li');
+    entry.setAttribute('class', 'consoleText you');
+    entry.appendChild(document.createTextNode(commandInput.value));
+    consoleList.appendChild(entry);
     game.submitCommand(commandInput.value.toLowerCase());
     commandInput.value = '';
     consoleList.scrollTop = consoleList.scrollHeight;

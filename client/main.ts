@@ -169,7 +169,14 @@ game.onPrint((text) => {
 
 commandForm.onsubmit = (event) => {
   event.preventDefault()
+
+  const entry = document.createElement('li');
+  entry.setAttribute('class', 'consoleText you')
+  entry.appendChild(document.createTextNode(commandInput.value))
+  consoleList.appendChild(entry)
+
   game.submitCommand(commandInput.value.toLowerCase())
+
   commandInput.value = ''
   consoleList.scrollTop = consoleList.scrollHeight
 }
