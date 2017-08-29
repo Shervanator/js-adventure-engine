@@ -131,16 +131,16 @@ class AdventureEngine {
   }
 
   go(direction: string) {
-    if (direction === 'forwards' || direction === 'forward' || direction === 'f' || direction === 'up' || direction === 'u') {
+    if (direction === 'forwards' || direction === 'forward' || direction === 'f' || direction === 'up' || direction === 'u' || direction === 'north' || direction === 'n') {
       const newStateY = this.stateY - 1
       this.visitRoom(this.stateX, newStateY)
-    } else if (direction === 'backwards' || direction === 'backward' || direction === 'b' || direction === 'back') {
+    } else if (direction === 'backwards' || direction === 'backward' || direction === 'b' || direction === 'back' || direction === 'south' || direction === 's') {
       const newStateY = this.stateY + 1
       this.visitRoom(this.stateX, newStateY)
-    } else if (direction === 'left' || direction === 'l') {
+    } else if (direction === 'left' || direction === 'l' || direction === 'west' || direction === 'w') {
       const newStateX = this.stateX - 1
       this.visitRoom(newStateX, this.stateY)
-    } else if (direction === 'right' || direction === 'r') {
+    } else if (direction === 'right' || direction === 'r' || direction === 'east' || direction === 'e') {
       const newStateX = this.stateX + 1
       this.visitRoom(newStateX, this.stateY)
     }

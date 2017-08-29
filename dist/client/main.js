@@ -112,19 +112,19 @@ var AdventureEngine = (function () {
         }
     };
     AdventureEngine.prototype.go = function (direction) {
-        if (direction === 'forwards' || direction === 'forward' || direction === 'f' || direction === 'up' || direction === 'u') {
+        if (direction === 'forwards' || direction === 'forward' || direction === 'f' || direction === 'up' || direction === 'u' || direction === 'north' || direction === 'n') {
             var newStateY = this.stateY - 1;
             this.visitRoom(this.stateX, newStateY);
         }
-        else if (direction === 'backwards' || direction === 'backward' || direction === 'b' || direction === 'back') {
+        else if (direction === 'backwards' || direction === 'backward' || direction === 'b' || direction === 'back' || direction === 'south' || direction === 's') {
             var newStateY = this.stateY + 1;
             this.visitRoom(this.stateX, newStateY);
         }
-        else if (direction === 'left' || direction === 'l') {
+        else if (direction === 'left' || direction === 'l' || direction === 'west' || direction === 'w') {
             var newStateX = this.stateX - 1;
             this.visitRoom(newStateX, this.stateY);
         }
-        else if (direction === 'right' || direction === 'r') {
+        else if (direction === 'right' || direction === 'r' || direction === 'east' || direction === 'e') {
             var newStateX = this.stateX + 1;
             this.visitRoom(newStateX, this.stateY);
         }
