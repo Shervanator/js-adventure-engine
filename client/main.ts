@@ -74,7 +74,7 @@ class AdventureEngine {
       this.print('You can do the following things:', 'gm')
       this.print('? or help: show this menu', 'action')
       this.print('look: have a look around', 'action')
-      this.print('go <direction>: walk in that direction', 'action')
+      this.print('go <direction>: walk in that direction, where direction is north/east/south/west or n/e/s/w or left/right/forward/back', 'action')
     } else if (command[0] === 'look') {
       this.look()
     } else if (command[0] === 'go' || command[0] === 'move' || command[0] === 'walk') {
