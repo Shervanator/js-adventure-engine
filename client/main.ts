@@ -1,28 +1,38 @@
-const questions = [{
-  "question": "You are waiting for you teacher before class, some kids decide to bully a small kid due to race",
-  "good": "Step in",
-  "bad": "Ignore the situation"
-},
-{
-  "question": "Do you decide to..",
-  "good": "Talk",
-  "bad": "Fight"
-}]
-
+const items = {
+  0: {
+    "description": "A Hat!"
+  }
+}
 
 const rooms = {
   0: {
     "intro": "You have woken up in the middle of the forest",
+    "return": "You are in the middle of the forest",
     "details": "You look ahead and notice something dark"
   },
   1: {
     "intro": "You have entered a dark valley",
-    "details": "its very quiet"
+    "details": "its very quiet, but you hear something on the left"
+  },
+  2: {
+    "intro": "You walk up to a tree, and you see a boy on the floor who seems hurt",
+    "details": "You are confused, you need to make a choice",
+    "actions": {
+      "help the boy": {
+        "message": "The boy thanks you and give you a hat",
+        "reward": 0,
+        "singleUse": true,
+        "done": false
+      },
+      "leave him": {
+        "message": "The boy pleads for help"
+      },
+    }
   }
 }
 
 const map = [
-  [null,    1, null],
+  [2,       1, null],
   [null,    0, null],
   [null, null, null]
 ]
@@ -39,7 +49,7 @@ class AdventureEngine {
   stateY: number
 
   constructor(rooms, map, width, height, startX, startY) {
-    this.rooms = rooms
+    this.rooms = JSON.parse(JSON.stringify(rooms)) // deep copy
     this.map = map
     this.width = width
     this.height = height
@@ -78,6 +88,7 @@ class AdventureEngine {
       if (this.checkLegalPosition(this.stateX, newStateY)) {
         this.stateY = newStateY
         this.printIntro()
+        this.markRoomVisited()
       } else {
         this.print('I cannot go that way chump!')
       }
@@ -86,6 +97,7 @@ class AdventureEngine {
       if (this.checkLegalPosition(this.stateX, newStateY)) {
         this.stateY = newStateY
         this.printIntro()
+        this.markRoomVisited()
       } else {
         this.print('I cannot go that way chump!')
       }
@@ -94,6 +106,7 @@ class AdventureEngine {
       if (this.checkLegalPosition(newStateX, this.stateY)) {
         this.stateX = newStateX
         this.printIntro()
+        this.markRoomVisited()
       } else {
         this.print('I cannot go that way chump!')
       }
@@ -102,6 +115,7 @@ class AdventureEngine {
       if (this.checkLegalPosition(newStateX, this.stateY)) {
         this.stateX = newStateX
         this.printIntro()
+        this.markRoomVisited()
       } else {
         this.print('I cannot go that way chump!')
       }
@@ -121,11 +135,21 @@ class AdventureEngine {
   }
 
   printIntro() {
-    this.print(this.getRoom().intro)
+    const room = this.getRoom()
+    if (room.visited && room.return) {
+      this.print(room.return)
+    } else {
+      this.print(room.intro)
+    }
+  }
+
+  markRoomVisited() {
+    this.getRoom().visited = true
   }
 
   start() {
     this.printIntro()
+    this.markRoomVisited()
   }
 }
 
@@ -133,40 +157,21 @@ const game = new AdventureEngine(rooms, map, 3, 3, 1, 1)
 
 const commandForm = document.getElementById('commandForm')
 const commandInput: HTMLInputElement = <HTMLInputElement>document.getElementById('command')
-const consoleList: HTMLUListElement = <HTMLUListElement>document.getElementById("console")
+const consoleList: HTMLUListElement = <HTMLUListElement>document.getElementById('console')
 
 game.onPrint((text) => {
   const entry = document.createElement('li');
   entry.setAttribute('class', 'consoleText')
   entry.appendChild(document.createTextNode(text))
   consoleList.appendChild(entry)
+  consoleList.scrollTop = consoleList.scrollHeight
 })
 
 commandForm.onsubmit = (event) => {
   event.preventDefault()
-  game.submitCommand(commandInput.value)
+  game.submitCommand(commandInput.value.toLowerCase())
   commandInput.value = ''
+  consoleList.scrollTop = consoleList.scrollHeight
 }
 
 game.start()
-
-// const consoleList = document.getElementById("consoleList")
-// const goodButton = document.getElementById("good")
-// const badButton = document.getElementById("bad")
-
-
-// let i = 0;
-// consoleList.innerText = questions[i].question
-// goodButton.innerText = questions[i].good
-// badButton.innerText = questions[i].bad
-
-// goodButton.onclick = (event) => {
-//   i++
-//   consoleList.innerText = questions[i].question
-//   goodButton.innerText = questions[i].good
-//   badButton.innerText = questions[i].bad
-// }
-
-// badButton.onclick = (event) => {
-//   consoleList.innerText = "Wrong kiddo"
-// }
