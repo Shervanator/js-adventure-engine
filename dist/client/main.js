@@ -55,10 +55,10 @@ var AdventureEngine = (function () {
     };
     AdventureEngine.prototype.processCommand = function (command) {
         if (command[0] === '?' || command[0] === 'help') {
-            this.print('You can do the following things:');
-            this.print('? or help: show this menu');
-            this.print('look: have a look around');
-            this.print('go <direction>: walk in that direction');
+            this.print('You can do the following things:', 'gm');
+            this.print('? or help: show this menu', 'action');
+            this.print('look: have a look around', 'action');
+            this.print('go <direction>: walk in that direction', 'action');
         }
         else if (command[0] === 'look') {
             this.look();
@@ -75,7 +75,7 @@ var AdventureEngine = (function () {
                 var actionKey = actions[i];
                 if (command === actionKey) {
                     var action = actionsObj[actionKey];
-                    this.print(action.message);
+                    this.print(action.message, 'gm');
                     return true;
                 }
             }
@@ -93,10 +93,10 @@ var AdventureEngine = (function () {
         var actionsObj = this.roomActions();
         if (actionsObj) {
             var actions = Object.keys(actionsObj);
-            this.print("You are able to do the following actions:");
+            this.print("You are able to do the following actions:", 'gm');
             actions.forEach(function (actionKey) {
                 var action = actionsObj[actionKey];
-                _this.print(actionKey);
+                _this.print(actionKey, 'action');
             });
         }
     };
@@ -108,15 +108,15 @@ var AdventureEngine = (function () {
             this.markRoomVisited();
         }
         else {
-            this.print('I cannot go that way chump!');
+            this.print('I cannot go that way chump!', 'gm');
         }
     };
     AdventureEngine.prototype.go = function (direction) {
-        if (direction === 'forwards' || direction === 'f' || direction === 'up' || direction === 'u') {
+        if (direction === 'forwards' || direction === 'forward' || direction === 'f' || direction === 'up' || direction === 'u') {
             var newStateY = this.stateY - 1;
             this.visitRoom(this.stateX, newStateY);
         }
-        else if (direction === 'backwards' || direction === 'b' || direction === 'back') {
+        else if (direction === 'backwards' || direction === 'backward' || direction === 'b' || direction === 'back') {
             var newStateY = this.stateY + 1;
             this.visitRoom(this.stateX, newStateY);
         }
@@ -130,7 +130,7 @@ var AdventureEngine = (function () {
         }
     };
     AdventureEngine.prototype.look = function () {
-        this.print(this.getRoom().details);
+        this.print(this.getRoom().details, 'gm');
         this.handleActions();
     };
     AdventureEngine.prototype.onPrint = function (func) {
@@ -142,10 +142,10 @@ var AdventureEngine = (function () {
     AdventureEngine.prototype.printIntro = function () {
         var room = this.getRoom();
         if (room.visited && room["return"]) {
-            this.print(room["return"]);
+            this.print(room["return"], 'gm');
         }
         else {
-            this.print(room.intro);
+            this.print(room.intro, 'gm');
         }
     };
     AdventureEngine.prototype.markRoomVisited = function () {
@@ -161,9 +161,9 @@ var game = new AdventureEngine(rooms, map, 3, 3, 1, 1);
 var commandForm = document.getElementById('commandForm');
 var commandInput = document.getElementById('command');
 var consoleList = document.getElementById('console');
-game.onPrint(function (text) {
+game.onPrint(function (text, textClass) {
     var entry = document.createElement('li');
-    entry.setAttribute('class', 'consoleText');
+    entry.setAttribute('class', "consoleText " + textClass);
     entry.appendChild(document.createTextNode(text));
     consoleList.appendChild(entry);
     consoleList.scrollTop = consoleList.scrollHeight;

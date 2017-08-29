@@ -71,10 +71,10 @@ class AdventureEngine {
 
   processCommand(command: Array<string>) {
     if (command[0] === '?' || command[0] === 'help') {
-      this.print('You can do the following things:')
-      this.print('? or help: show this menu')
-      this.print('look: have a look around')
-      this.print('go <direction>: walk in that direction')
+      this.print('You can do the following things:', 'gm')
+      this.print('? or help: show this menu', 'action')
+      this.print('look: have a look around', 'action')
+      this.print('go <direction>: walk in that direction', 'action')
     } else if (command[0] === 'look') {
       this.look()
     } else if (command[0] === 'go' || command[0] === 'move' || command[0] === 'walk') {
@@ -90,7 +90,7 @@ class AdventureEngine {
         const actionKey = actions[i]
         if (command === actionKey) {
           const action = actionsObj[actionKey]
-          this.print(action.message)
+          this.print(action.message, 'gm')
           return true
         }
       }
@@ -111,10 +111,10 @@ class AdventureEngine {
     if (actionsObj) {
       const actions = Object.keys(actionsObj)
 
-      this.print("You are able to do the following actions:")
+      this.print("You are able to do the following actions:", 'gm')
       actions.forEach((actionKey) => {
         const action = actionsObj[actionKey]
-        this.print(actionKey)
+        this.print(actionKey, 'action')
       })
     }
   }
@@ -126,15 +126,15 @@ class AdventureEngine {
       this.printIntro()
       this.markRoomVisited()
     } else {
-      this.print('I cannot go that way chump!')
+      this.print('I cannot go that way chump!', 'gm')
     }
   }
 
   go(direction: string) {
-    if (direction === 'forwards' || direction === 'f' || direction === 'up' || direction === 'u') {
+    if (direction === 'forwards' || direction === 'forward' || direction === 'f' || direction === 'up' || direction === 'u') {
       const newStateY = this.stateY - 1
       this.visitRoom(this.stateX, newStateY)
-    } else if (direction === 'backwards' || direction === 'b' || direction === 'back') {
+    } else if (direction === 'backwards' || direction === 'backward' || direction === 'b' || direction === 'back') {
       const newStateY = this.stateY + 1
       this.visitRoom(this.stateX, newStateY)
     } else if (direction === 'left' || direction === 'l') {
@@ -147,7 +147,7 @@ class AdventureEngine {
   }
 
   look() {
-    this.print(this.getRoom().details)
+    this.print(this.getRoom().details, 'gm')
     this.handleActions()
   }
 
@@ -162,9 +162,9 @@ class AdventureEngine {
   printIntro() {
     const room = this.getRoom()
     if (room.visited && room.return) {
-      this.print(room.return)
+      this.print(room.return, 'gm')
     } else {
-      this.print(room.intro)
+      this.print(room.intro, 'gm')
     }
   }
 
@@ -184,9 +184,9 @@ const commandForm = document.getElementById('commandForm')
 const commandInput: HTMLInputElement = <HTMLInputElement>document.getElementById('command')
 const consoleList: HTMLUListElement = <HTMLUListElement>document.getElementById('console')
 
-game.onPrint((text) => {
+game.onPrint((text, textClass) => {
   const entry = document.createElement('li');
-  entry.setAttribute('class', 'consoleText')
+  entry.setAttribute('class', `consoleText ${textClass}`)
   entry.appendChild(document.createTextNode(text))
   consoleList.appendChild(entry)
   consoleList.scrollTop = consoleList.scrollHeight
