@@ -47,15 +47,48 @@
 
       .container {
         max-width: 1396px;
-        height: 100%;
+        height: calc(100% - 38px);
         margin: 0 auto;
         top: 19px;
         border-radius: 3px;
 
         box-shadow: 0 1px 1px 0 rgba(0,0,0,0.06), 0 2px 5px 0 rgba(0,0,0,0.2);
+
+        position: relative;
+        overflow: hidden;
+        -webkit-transform-origin: center;
+        transform-origin: center;
+        -webkit-animation: app-enter 0.3s cubic-bezier(0.1, 0.82, 0.25, 1);
+        animation: app-enter 0.3s cubic-bezier(0.1, 0.82, 0.25, 1);
+        background-position: top left;
+        background-repeat: repeat-x;
+        background-color: #f7f7f7;
+        display: -webkit-flex;
+        display: flex;
       }
 
-      #containerFoo {
+      .leftPanel {
+        /* width: 30%; */
+        width: 0%;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+
+        height: 100%;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .rightPanel {
+        /* width: 70%; */
+        width: 100%;
         background-color: #e5ddd5;
         height: 100%;
         -webkit-transform: translateZ(0);
@@ -155,13 +188,17 @@
     <div class="app">
       <div class="appContainer">
         <div class="container">
-          <div id="containerFoo">
+          <div class="leftPanel">
+            <p>hello</p>
+            <p>hello</p>
+          </div>
+          <div class="rightPanel">
             <ul id="console">
               <li class="consoleText">Welcome adventurer, type '?' to get started</li>
             </ul>
             <footer>
               <form id="commandForm">
-                <input id="command" type="text" autocomplete="off" />
+                <input id="command" type="text" autocomplete="off" autofocus />
                 <input class="hidden" type="submit" value="Submit">
               </form>
             </footer>
