@@ -14,14 +14,12 @@ var rooms = {
         "details": "its very quiet, but you hear something on the left"
     },
     2: {
-        "intro": "You walk up to a tree, and you see a boy on the floor who seems hurt",
-        "details": "You are confused, you need to make a choice",
+        "intro": "You walk up to a tree",
+        "details": "You see a boy on the floor who seems hurt, you need to make a choice",
         "actions": {
             "help the boy": {
                 "message": "The boy thanks you and give you a hat",
-                "reward": 0,
-                "singleUse": true,
-                "done": false
+                "reward": 0
             },
             "leave him": {
                 "message": "The boy pleads for help"
@@ -78,6 +76,7 @@ var AdventureEngine = (function () {
                 var actionKey = actions[i];
                 if (command === actionKey) {
                     var action = actionsObj[actionKey];
+                    this.getRoom().actionDone = true;
                     this.print(action.message, 'gm');
                     return true;
                 }
@@ -133,8 +132,13 @@ var AdventureEngine = (function () {
         }
     };
     AdventureEngine.prototype.look = function () {
-        this.print(this.getRoom().details, 'gm');
-        this.handleActions();
+        if (!this.getRoom().actionDone) {
+            this.print(this.getRoom().details, 'gm');
+            this.handleActions();
+        }
+        else {
+            this.print('nothing left here', 'gm');
+        }
     };
     AdventureEngine.prototype.onPrint = function (func) {
         this.print = func;
